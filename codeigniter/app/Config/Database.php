@@ -77,15 +77,22 @@ class Database extends Config
         'foreignKeys' => true,
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
+	public function __construct()
+	{
+		parent::__construct();
 
-        // Ensure that we always set the database group to 'tests' if
-        // we are currently running an automated test suite, so that
-        // we don't overwrite live data on accident.
-        if (ENVIRONMENT === 'testing') {
-            $this->defaultGroup = 'tests';
-        }
-    }
+		if (ENVIRONMENT === 'testing') {
+			$this->defaultGroup = 'tests';
+		}
+
+		$this->configFromDocker = [
+			'default' => $this->default,
+		];
+
+		foreach ($this->configFromDocker as $databaseName => $database) {
+			$this->{$databaseName}['hostname'] = getenv('PMA_HOST');
+			$this->{$databaseName}['username'] = getenv('DB_'.strtoupper($databaseName).'_USER');
+			$this->{$databaseName}['password'] = getenv('DB_'.strtoupper($databaseName).'_PASSWORD');
+		}
+	}
 }

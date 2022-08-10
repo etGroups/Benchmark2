@@ -38,6 +38,7 @@ $routes->set404Override();
 $routes->get('/', 'Home::index');
 $routes->get('/HelloHTTP', 'Home::HelloHTTP');
 $routes->post('/PongHTTP', 'Home::PongHTTP');
+$routes->get('/SqlHTTP', 'Home::SqlHTTP');
 
 /*
  * --------------------------------------------------------------------

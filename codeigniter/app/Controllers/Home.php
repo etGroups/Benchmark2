@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\CustomerModel;
+
 class Home extends BaseController
 {
     public function HelloHTTP(): string
@@ -14,6 +16,6 @@ class Home extends BaseController
 	}
 	public function SqlHTTP()
 	{
-		return view('welcome_message');
+		return json_encode((new CustomerModel())->findAll(10));
 	}
 }
