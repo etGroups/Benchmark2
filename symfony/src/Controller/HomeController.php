@@ -3,13 +3,13 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends AbstractController
 {
-	#[Route('/home', name: 'home_list')]
-	public function list()
+	#[Route('/HelloHTTP')]
+	public function HelloHTTP()
 	{
-		dd('aa');
-		// ...
+		return new Response('Hello World', Response::HTTP_OK, ['content-type' => 'text/html']);
 	}
 }
