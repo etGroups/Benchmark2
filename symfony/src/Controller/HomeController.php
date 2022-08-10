@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class HomeController extends AbstractController
 {
@@ -23,11 +24,10 @@ class HomeController extends AbstractController
 	}
 
 	#[Route('/SqlHTTP')]
-	public function SqlHTTP(ManagerRegistry $doctrine)
+	public function SqlHTTP(ManagerRegistry $doctrine, SerializerInterface $serializer)
 	{
 		$repository = $doctrine->getRepository(Customer::class);
-		$customers = $repository->findAll();
-		dd($customers);
-		return new Response(json_encode($repository->findAll()), Response::HTTP_OK, ['content-type' => 'application/json']);
+		$customers = $repository->findBy([], [], 10);
+		return new Response($serializer->serialize($customers, 'json'), Response::HTTP_OK, ['content-type' => 'application/json']);
 	}
 }
