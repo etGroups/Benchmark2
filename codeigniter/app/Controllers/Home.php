@@ -4,8 +4,16 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function index()
+    public function HelloHTTP(): string
     {
-        return view('welcome_message');
+		return 'Hello World';
     }
+	public function PongHTTP(): string
+	{
+		return $this->request->getBody();
+	}
+	public function SqlHTTP()
+	{
+		return view('welcome_message');
+	}
 }
