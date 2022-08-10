@@ -12,17 +12,18 @@ services:
       - '81:80'
     env_file:
       - .env
-#  codeigniter:
-#    build:
-#      dockerfile: dockerfiles/codeigniter
-#      context: .
-#    restart: always
-#    volumes:
-#      - ./codeigniter:/var/www/html
-#    ports:
-#      - '82:80'
-#    env_file:
-#      - .env
+  codeigniter:
+    build:
+      dockerfile: dockerfiles/codeigniter
+      context: .
+    restart: always
+    volumes:
+      - ./codeigniter:/var/www/html
+      - ./apache2/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - '82:80'
+    env_file:
+      - .env
   node:
     build:
       dockerfile: dockerfiles/node
