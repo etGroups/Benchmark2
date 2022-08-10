@@ -1,0 +1,75 @@
+version: "3.9"
+services:
+  symfony:
+    build:
+      dockerfile: dockerfiles/symfony
+      context: .
+    restart: always
+    volumes:
+      - ./symfony:/var/www/html
+      - ./apache2/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - '81:80'
+    env_file:
+      - .env
+#  codeigniter:
+#    build:
+#      dockerfile: dockerfiles/codeigniter
+#      context: .
+#    restart: always
+#    volumes:
+#      - ./codeigniter:/var/www/html
+#    ports:
+#      - '82:80'
+#    env_file:
+#      - .env
+  node:
+    build:
+      dockerfile: dockerfiles/node
+      context: .
+    restart: always
+    volumes:
+      - ./node:/home/node/
+    ports:
+      - '83:80'
+    env_file:
+      - .env
+  deno:
+    build:
+      dockerfile: dockerfiles/deno
+      context: .
+    restart: always
+    volumes:
+      - ./deno:/home/deno/
+    ports:
+      - '84:80'
+    env_file:
+      - .env
+  nodefastify:
+    build:
+      dockerfile: dockerfiles/node
+      context: .
+    restart: always
+    volumes:
+      - ./nodeFastify:/home/node/
+    ports:
+      - '85:80'
+    env_file:
+      - .env
+  db:
+    image: mariadb:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ~/docker/benchmark:/var/lib/mysql
+      - ./db.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8081:80"

@@ -1,0 +1,102 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Websocket Tests</title>
+	<meta name="description" content="Websocket Tests">
+	<meta name="author" content="Tomasz Piwowarski & Emil Dworniczak">
+	<meta property="og:title" content="Websocket Tests">
+	<meta property="og:type" content="website">
+	<meta property="og:description" content="Websocket Tests">
+	<meta property="og:image" content="image.png">
+
+	<!--  <link rel="icon" href="/favicon.ico">
+	  <link rel="apple-touch-icon" href="/apple-touch-icon.png">-->
+
+</head>
+
+<body>
+<script>
+	async function sendMessagePONGHTTP(address, message) {
+		let timestart = Date.now();
+		let endtime = 0;
+		let inCount = 0;
+		console.log("address: ", address);
+		while (endtime - timestart < 30000) {
+			const response = await fetch(address, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'text/plain'
+				},
+				body: message
+			});
+			await response.text();
+			endtime = Date.now();
+			++inCount;
+		}
+		console.log(`${inCount} messages in ${endtime - timestart} ms`);
+	}
+
+	async function sendMessageHTTP(address) {
+		let timestart = Date.now();
+		let endtime = 0;
+		let inCount = 0;
+
+		console.log("address: ", address);
+		while (endtime - timestart < 30000) {
+			const response = await fetch(address, {method: 'GET'});
+			await response.text();
+			endtime = Date.now();
+			++inCount;
+		}
+		console.log(`${inCount} messages in ${endtime - timestart} ms`);
+	}
+
+	async function sendMessageWS(message, address) {
+		let inCount = 0;
+		let timestart = Date.now();
+		let endtime = 0;
+		console.log("address: ", address);
+		let socket = new WebSocket(address);
+		socket.onopen = function (e) {
+			socket.send(message);
+		};
+		socket.onmessage = function (event) {
+			// console.log(`[message] Data received from server: ${event.data}`);
+			++inCount;
+			endtime = Date.now();
+			let time = endtime - timestart;
+			if (time >= 30000) {
+				console.log(`${inCount} messages in ${endtime - timestart} ms`);
+				return true;
+			}
+			socket.send(message);
+		};
+		socket.onclose = function (event) {
+			if (event.wasClean) {
+				console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+			} else {
+				console.log('[close] Connection died');
+			}
+		};
+		socket.onerror = function (error) {
+			console.log(`[error] ${error.message}`);
+		};
+	}
+
+    // sendMessagePONGHTTP('http://0.0.0.0:81/PongHTTP', "Pong");   //Swoole
+    // sendMessagePONGHTTP('http://0.0.0.0:82/PongHTTP', "Pong");   //Fiber
+    // sendMessagePONGHTTP('http://0.0.0.0:83/PongHTTP', "Pong");   //uWS
+    // sendMessagePONGHTTP('http://0.0.0.0:84/PongHTTP', "Pong");   //Deno
+    // sendMessagePONGHTTP('http://0.0.0.0:85/PongHTTP', "Pong");   //Fastify
+
+    // sendMessageWS("Pong", 'ws://localhost:81');                  //Swoole
+    // sendMessageWS("Pong", 'ws://localhost:82/ws');               //Fiber
+    // sendMessageWS("Pong", 'ws://localhost:83');                  //uWS
+    // sendMessageWS("Pong", 'ws://localhost:84');                  //Deno
+    // sendMessageWS("Pong", 'ws://localhost:85');                  //Fastify
+</script>
+</body>
+</html>
