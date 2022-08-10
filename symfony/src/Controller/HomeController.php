@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Customer;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +23,11 @@ class HomeController extends AbstractController
 	}
 
 	#[Route('/SqlHTTP')]
-	public function SqlHTTP()
+	public function SqlHTTP(ManagerRegistry $doctrine)
 	{
-		$customers = ['test'];
-		return new Response(json_encode($customers), Response::HTTP_OK, ['content-type' => 'application/json']);
+		$repository = $doctrine->getRepository(Customer::class);
+		$customers = $repository->findAll();
+		dd($customers);
+		return new Response(json_encode($repository->findAll()), Response::HTTP_OK, ['content-type' => 'application/json']);
 	}
 }
